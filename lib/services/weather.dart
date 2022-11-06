@@ -1,7 +1,8 @@
 import 'location.dart';
 import 'networking.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const apiKey = 'c8816ba7bf255bcb06664ac735cac0ec';
+String apiKey = dotenv.env['API_KEY'];
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 
 //https://api.openweathermap.org/data/2.5/weather';
