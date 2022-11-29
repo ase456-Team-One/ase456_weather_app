@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
+import '../widgets/windInfo.dart';
 import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -18,6 +19,8 @@ class _LocationScreenState extends State<LocationScreen> {
   String weatherIcon;
   String cityName;
   String weatherMessage;
+  double windSpeed;
+  double windDirect;
 
   @override
   void initState() {
@@ -36,6 +39,8 @@ class _LocationScreenState extends State<LocationScreen> {
         return;
       }
       double temp = weatherData['main']['temp'];
+      windSpeed = weatherData['wind']['speed'];
+      windDirect = weatherData['wind']['deg'];
       temperature = temp.toInt();
       var condition = weatherData['weather'][0]['id'];
       weatherIcon = weather.getWeatherIcon(condition);
@@ -114,6 +119,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   '$temperature°',
                   style: kTempTextStyle,
                 ),
+                Wind(windDirect,windSpeed),
                 Text(
                   weatherIcon,
                   style: kConditionTextStyle,
