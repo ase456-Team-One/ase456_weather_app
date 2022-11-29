@@ -7,9 +7,10 @@ import 'city_screen.dart';
 enum Units { imperial, metric }
 
 class LocationScreen extends StatefulWidget {
-  LocationScreen({this.locationWeather});
+  LocationScreen({this.locationWeather, this.locationHourlyWeather});
 
   final locationWeather;
+  final locationHourlyWeather;
 
   @override
   _LocationScreenState createState() => _LocationScreenState();
@@ -27,10 +28,10 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   void initState() {
     super.initState();
-    updateUI(widget.locationWeather);
+    updateUI(widget.locationWeather, widget.locationHourlyWeather);
   }
 
-  void updateUI(dynamic weatherData, [dynamic hourlyData]) {
+  void updateUI(dynamic weatherData, dynamic hourlyData) {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
@@ -63,7 +64,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
                   // TODO widgets/widget-returning-methods go here
-                  buildHourlyWidget(context),
+                  (hourly != null) ? buildHourlyWidget(context) : SizedBox(),
                 ],
               ),
             ),
@@ -86,36 +87,34 @@ class _LocationScreenState extends State<LocationScreen> {
         child: ListView(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.all(8.0),
-          children: (hourly != null)
-              ? hourly.map((hourlyTemperature) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 3.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '${hourlyTemperature.temperature}\u00B0',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Image.network(
-                          'http://openweathermap.org/img/wn/${hourlyTemperature.iconId}@4x.png',
-                          width: 36,
-                          height: 36,
-                        ),
-                        Text(
-                          '${hourlyTemperature.time}',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList()
-              : [Text('Error'), Text('Please try again')],
+          children: hourly.map((hourlyTemperature) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '${hourlyTemperature.temperature}\u00B0',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Image.network(
+                    'http://openweathermap.org/img/wn/${hourlyTemperature.iconId}@4x.png',
+                    width: 36,
+                    height: 36,
+                  ),
+                  Text(
+                    '${hourlyTemperature.time}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -176,8 +175,10 @@ class _LocationScreenState extends State<LocationScreen> {
       children: <Widget>[
         TextButton(
           onPressed: () async {
-            var weatherData = await weather.getLocationWeather();
-            updateUI(weatherData);
+            var weatherData = await weather.getLocationWeather(unit);
+            var hourlyForecastData =
+                await weather.getLocationHourlyForecast(unit);
+            updateUI(weatherData, hourlyForecastData);
           },
           child: Icon(
             Icons.near_me,

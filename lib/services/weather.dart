@@ -12,20 +12,18 @@ const openWeatherHourlyURLBase =
 //https://api.openweathermap.org/data/2.5/weather';
 // '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=metric'
 class WeatherModel {
-  Future<dynamic> getCityWeather(String cityName,
-      [String unit = 'imperial']) async {
+  Future<dynamic> getCityWeather(String cityName, String unit) async {
     var str = '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=$unit';
-    print(str);
+    //print(str);
     NetworkHelper networkHelper = NetworkHelper(str);
 
     var weatherData = await networkHelper.getData();
     return weatherData;
   }
 
-  Future<dynamic> getHourlyForecast(String cityName,
-      [String unit = 'imperial']) async {
+  Future<dynamic> getHourlyForecast(String cityName, String unit) async {
     var str = '$openWeatherHourlyURLBase?q=$cityName&appid=$apiKey&units=$unit';
-    print(str);
+    //print(str);
     NetworkHelper networkHelper = NetworkHelper(str);
 
     var weatherData = await networkHelper.getData();
@@ -35,7 +33,7 @@ class WeatherModel {
     return hourlyForecast;
   }
 
-  Future<dynamic> getLocationWeather([String unit = 'imperial']) async {
+  Future<dynamic> getLocationWeather(String unit) async {
     Location location = Location();
 
     await location.getCurrentLocation();
@@ -45,6 +43,21 @@ class WeatherModel {
 
     var weatherData = await networkHelper.getData();
     return weatherData;
+  }
+
+  Future<dynamic> getLocationHourlyForecast(String unit) async {
+    Location location = Location();
+
+    await location.getCurrentLocation();
+
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherHourlyURLBase?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=$unit');
+
+    var weatherData = await networkHelper.getData();
+    List hourlyForecast = weatherData['list']
+        .map((hourly) => HourlyTemperature.fromJson(hourly))
+        .toList();
+    return hourlyForecast;
   }
 
   String getWeatherIcon(int condition) {
