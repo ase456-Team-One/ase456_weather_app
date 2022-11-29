@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
 import '../widgets/windInfo.dart';
+import '../widgets/seasons.dart';
 import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -154,6 +155,7 @@ class _LocationScreenState extends State<LocationScreen> {
             size: 50.0,
           ),
         ),
+        Seasons(),
         TextButton(
           onPressed: () async {
             var typedName = await Navigator.push(

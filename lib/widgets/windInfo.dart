@@ -21,11 +21,15 @@ class _WindState extends State<Wind> {
   Widget build(BuildContext context) {
     return Column(
         children: <Widget>[
+          Text(
+            'Wind Speed',
+            style: TextStyle(fontSize:25),
+          ),
           Transform.rotate(
             angle: (windDirect-180) * math.pi / 180,
             child: Icon(
               Icons.arrow_downward_rounded,
-              color: Colors.black,
+              color: Colors.white,
           ),
         ),
         Text(
