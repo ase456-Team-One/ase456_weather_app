@@ -69,7 +69,6 @@ class _LocationScreenState extends State<LocationScreen> {
       sunsetTime = weatherData['sys']['sunset'];
       timeZone = weatherData["timezone"];
       formattedCurrentDay = DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
-
     });
   }
 
