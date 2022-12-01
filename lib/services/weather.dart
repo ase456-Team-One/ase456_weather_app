@@ -4,6 +4,7 @@ import 'location.dart';
 import 'networking.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+
 String apiKey = dotenv.env['API_KEY'];
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 const openWeatherHourlyURLBase =

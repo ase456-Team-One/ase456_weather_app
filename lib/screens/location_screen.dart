@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
+import 'package:intl/intl.dart';
 import 'city_screen.dart';
+import '../widgets/cloudiness.dart';
+import '../widgets/Time.dart';
 
 enum Units { imperial, metric }
 
@@ -24,6 +27,13 @@ class _LocationScreenState extends State<LocationScreen> {
   String weatherMessage;
   List hourly;
   String unit = 'imperial';
+  int cloudinessPercent;
+  int currentTime;
+  int sunriseTime;
+  int sunsetTime;
+  int timeZone;
+  DateTime currentDay;
+  String formattedCurrentDay;
 
   @override
   void initState() {
@@ -38,6 +48,12 @@ class _LocationScreenState extends State<LocationScreen> {
         weatherIcon = 'Error';
         weatherMessage = 'Unable to get weather data';
         cityName = '';
+        cloudinessPercent = 404;
+        currentTime = 404;
+        sunriseTime = 404;
+        sunsetTime = 404;
+        timeZone = 404;
+        formattedCurrentDay = "Day not Found";
         return;
       }
       double temp = weatherData['main']['temp'];
@@ -47,6 +63,13 @@ class _LocationScreenState extends State<LocationScreen> {
       weatherMessage = weather.getMessage(temperature);
       cityName = weatherData['name'];
       hourly = hourlyData;
+      cloudinessPercent = weatherData['clouds']['all'];
+      currentTime = weatherData['dt'];
+      sunriseTime = weatherData['sys']['sunrise'];
+      sunsetTime = weatherData['sys']['sunset'];
+      timeZone = weatherData["timezone"];
+      formattedCurrentDay = DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
+
     });
   }
 
@@ -185,6 +208,9 @@ class _LocationScreenState extends State<LocationScreen> {
             size: 50.0,
           ),
         ),
+        Cloudiness(percentage: cloudinessPercent,),
+        Time(currentTime: currentTime, sunriseTime: sunriseTime, sunsetTime: sunsetTime, currentDate: formattedCurrentDay,),
+
         buildPopUpMenu(context),
         TextButton(
           onPressed: () async {
