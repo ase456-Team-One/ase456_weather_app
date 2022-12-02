@@ -30,12 +30,7 @@ analysis_options.yaml
 .pub-cache/
 .pub/
 /build/
-<<<<<<< Updated upstream
 dotenv.env
-=======
-.env
-
->>>>>>> Stashed changes
 
 # Android related
 **/android/**/gradle-wrapper.jar
