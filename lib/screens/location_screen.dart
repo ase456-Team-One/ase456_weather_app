@@ -12,10 +12,15 @@ import '../widgets/Time.dart';
 enum Units { imperial, metric }
 
 class LocationScreen extends StatefulWidget {
-  LocationScreen({this.locationWeather, this.locationHourlyWeather});
+  LocationScreen({
+    this.locationWeather,
+    this.locationHourlyWeather,
+    this.locationDailyWeather,
+  });
 
   final locationWeather;
   final locationHourlyWeather;
+  final locationDailyWeather;
 
   @override
   _LocationScreenState createState() => _LocationScreenState();
@@ -38,14 +43,17 @@ class _LocationScreenState extends State<LocationScreen> {
   String formattedCurrentDay;
   double windSpeed;
   double windDirect;
+  List daily;
+  DateTime datetime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    updateUI(widget.locationWeather, widget.locationHourlyWeather);
+    updateUI(widget.locationWeather, widget.locationHourlyWeather,
+        widget.locationDailyWeather);
   }
 
-  void updateUI(dynamic weatherData, dynamic hourlyData) {
+  void updateUI(dynamic weatherData, dynamic hourlyData, dynamic dailyData) {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
@@ -60,6 +68,7 @@ class _LocationScreenState extends State<LocationScreen> {
         formattedCurrentDay = "Day not Found";
         return;
       }
+      daily = dailyData;
       double temp = weatherData['main']['temp'];
       windSpeed = weatherData['wind']['speed'];
       windDirect = weatherData['wind']['deg'];
@@ -74,7 +83,8 @@ class _LocationScreenState extends State<LocationScreen> {
       sunriseTime = weatherData['sys']['sunrise'];
       sunsetTime = weatherData['sys']['sunset'];
       timeZone = weatherData["timezone"];
-      formattedCurrentDay = DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
+      formattedCurrentDay = DateFormat.jm().format(
+          DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
     });
   }
 
@@ -92,12 +102,53 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
                   // TODO widgets/widget-returning-methods go here
+                  (daily != null) ? buildDailyWidget(context) : SizedBox(),
                   (hourly != null) ? buildHourlyWidget(context) : SizedBox(),
                 ],
               ),
             ),
           );
         }, // end of builder
+      ),
+    );
+  }
+
+  Widget buildDailyWidget(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 130,
+        color: Colors.transparent,
+        padding: const EdgeInsets.all(8),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: daily.map((
+            dailyTemperature,
+          ) {
+            return Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 100.0, vertical: 3.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      Text("Daily Temperature: ",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.w500)),
+                      Text(
+                        '${dailyTemperature.temperature}\u00B0',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ));
+          }).toList(),
+        ),
       ),
     );
   }
@@ -170,6 +221,14 @@ class _LocationScreenState extends State<LocationScreen> {
           // "AppBar" that's actually just a row at the top of the screen
           buildFakeAppBar(context),
           Padding(
+            padding: EdgeInsets.only(right: 15.0),
+            child: Text(
+              "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
+              textAlign: TextAlign.center,
+              style: kMessageTextStyle,
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.only(left: 15.0),
             child: Row(
               children: <Widget>[
@@ -177,7 +236,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   '$temperature°',
                   style: kTempTextStyle,
                 ),
-                Wind(windDirect,windSpeed),
+                Wind(windDirect, windSpeed),
                 Text(
                   weatherIcon,
                   style: kConditionTextStyle,
@@ -207,18 +266,26 @@ class _LocationScreenState extends State<LocationScreen> {
             var weatherData = await weather.getLocationWeather(unit);
             var hourlyForecastData =
                 await weather.getLocationHourlyForecast(unit);
-            updateUI(weatherData, hourlyForecastData);
+            var dailyForecastData =
+                await weather.getLocationDailyForecast(unit);
+            updateUI(weatherData, hourlyForecastData, dailyForecastData);
           },
           child: Icon(
             Icons.near_me,
             size: 50.0,
           ),
         ),
-        Cloudiness(percentage: cloudinessPercent,),
-        Time(currentTime: currentTime, sunriseTime: sunriseTime, sunsetTime: sunsetTime, currentDate: formattedCurrentDay,),
+        Cloudiness(
+          percentage: cloudinessPercent,
+        ),
+        Time(
+          currentTime: currentTime,
+          sunriseTime: sunriseTime,
+          sunsetTime: sunsetTime,
+          currentDate: formattedCurrentDay,
+        ),
         buildPopUpMenu(context),
         Seasons(),
-
         TextButton(
           onPressed: () async {
             var typedName = await Navigator.push(
@@ -232,7 +299,9 @@ class _LocationScreenState extends State<LocationScreen> {
             if (typedName != null) {
               var weatherData = await weather.getCityWeather(typedName, unit);
               var hourlyData = await weather.getHourlyForecast(typedName, unit);
-              updateUI(weatherData, hourlyData);
+              var dailyForecast =
+                  await weather.getDailyForecast(typedName, unit);
+              updateUI(weatherData, hourlyData, dailyForecast);
             }
           },
           child: Icon(
@@ -315,6 +384,7 @@ class _LocationScreenState extends State<LocationScreen> {
   Future<void> refetchAndUpdate() async {
     var weatherData = await weather.getCityWeather(cityName, unit);
     var hourlyData = await weather.getHourlyForecast(cityName, unit);
-    updateUI(weatherData, hourlyData);
+    var dailyData = await weather.getDailyForecast(cityName, unit);
+    updateUI(weatherData, hourlyData, dailyData);
   }
 }

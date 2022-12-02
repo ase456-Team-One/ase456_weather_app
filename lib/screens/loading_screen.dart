@@ -21,11 +21,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
     var weatherData = await WeatherModel().getLocationWeather('imperial');
     var hourlyForecastData =
         await WeatherModel().getLocationHourlyForecast('imperial');
+    var dailyForecastData =
+        await WeatherModel().getLocationDailyForecast('imperial');
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return LocationScreen(
           locationWeather: weatherData,
-          locationHourlyWeather: hourlyForecastData);
+          locationHourlyWeather: hourlyForecastData,
+          locationDailyWeather: dailyForecastData);
     }));
   }
 

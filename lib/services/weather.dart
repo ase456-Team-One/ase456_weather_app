@@ -1,14 +1,16 @@
 import 'package:climate/services/weather_hourly.dart';
+import 'package:climate/services/weather_daily.dart';
 
 import 'location.dart';
 import 'networking.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
 String apiKey = dotenv.env['API_KEY'];
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 const openWeatherHourlyURLBase =
     'https://pro.openweathermap.org/data/2.5/forecast/hourly';
+const openWeatherDailyURLBase =
+    'https://api.openweathermap.org/data/2.5/forecast/daily';
 
 //https://api.openweathermap.org/data/2.5/weather';
 // '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=metric'
@@ -59,6 +61,35 @@ class WeatherModel {
         .map((hourly) => HourlyTemperature.fromJson(hourly))
         .toList();
     return hourlyForecast;
+  }
+
+  Future<dynamic> getLocationDailyForecast(String unit) async {
+    Location location = Location();
+
+    await location.getCurrentLocation();
+
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherDailyURLBase?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=$unit');
+
+    var weatherData = await networkHelper.getData();
+    List dailyForecast = weatherData['list']
+        .map((daily) => DailyTemperature.fromJson(daily))
+        .toList();
+    return dailyForecast;
+  }
+
+  Future<dynamic> getDailyForecast(String cityName, String unit) async {
+    var str = '$openWeatherDailyURLBase?q=$cityName&appid=$apiKey&units=$unit';
+
+    NetworkHelper networkHelper = NetworkHelper(str);
+
+    var weatherData = await networkHelper.getData();
+
+    List dailyForecast = weatherData['list']
+        .map((daily) => DailyTemperature.fromJson(daily))
+        .toList();
+
+    return dailyForecast;
   }
 
   String getWeatherIcon(int condition) {
