@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
   blurrycontainer: 1.0.2
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.2
   geolocator: ^9.0.2
   http: ^0.12.0+2
   flutter_spinkit: ^3.1.0

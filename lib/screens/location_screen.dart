@@ -3,6 +3,8 @@ import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:intl/intl.dart';
+import '../widgets/windInfo.dart';
+import '../widgets/seasons.dart';
 import 'city_screen.dart';
 import '../widgets/cloudiness.dart';
 import '../widgets/Time.dart';
@@ -34,6 +36,8 @@ class _LocationScreenState extends State<LocationScreen> {
   int timeZone;
   DateTime currentDay;
   String formattedCurrentDay;
+  double windSpeed;
+  double windDirect;
 
   @override
   void initState() {
@@ -57,6 +61,8 @@ class _LocationScreenState extends State<LocationScreen> {
         return;
       }
       double temp = weatherData['main']['temp'];
+      windSpeed = weatherData['wind']['speed'];
+      windDirect = weatherData['wind']['deg'];
       temperature = temp.toInt();
       var condition = weatherData['weather'][0]['id'];
       weatherIcon = weather.getWeatherIcon(condition);
@@ -171,6 +177,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   '$temperature°',
                   style: kTempTextStyle,
                 ),
+                Wind(windDirect,windSpeed),
                 Text(
                   weatherIcon,
                   style: kConditionTextStyle,
@@ -209,8 +216,9 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
         Cloudiness(percentage: cloudinessPercent,),
         Time(currentTime: currentTime, sunriseTime: sunriseTime, sunsetTime: sunsetTime, currentDate: formattedCurrentDay,),
-
         buildPopUpMenu(context),
+        Seasons(),
+
         TextButton(
           onPressed: () async {
             var typedName = await Navigator.push(
