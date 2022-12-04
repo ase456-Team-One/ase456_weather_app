@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utilities/constants.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 
 class Cloudiness extends StatefulWidget {

@@ -45,6 +45,12 @@ class _LocationScreenState extends State<LocationScreen> {
   String formattedCurrentDay;
   double windSpeed;
   double windDirect;
+  double tempHigh;
+  double tempLow;
+  double tempFeels;
+  double humidity;
+  String chance_of_rain;
+
   //Josh Lohner - code 12/4/22 | Info:Initliazes the List daily variable, and get the Date for the current day
   List daily;
   DateTime datetime = DateTime.now();
@@ -73,9 +79,9 @@ class _LocationScreenState extends State<LocationScreen> {
       }
       //Josh Lohner - code 12/4/22 | Info:When the UI is updated, it sets the dailyData object to the daily list
       daily = dailyData;
-      double temp = weatherData['main']['temp'];
-      windSpeed = weatherData['wind']['speed'];
-      windDirect = weatherData['wind']['deg'];
+      double temp = weatherData['main']['temp'].toDouble();
+      windSpeed = weatherData['wind']['speed'].toDouble();
+      windDirect = weatherData['wind']['deg'].toDouble();
       temperature = temp.toInt();
       var condition = weatherData['weather'][0]['id'];
       weatherIcon = weather.getWeatherIcon(condition);
@@ -89,6 +95,11 @@ class _LocationScreenState extends State<LocationScreen> {
       timeZone = weatherData["timezone"];
       formattedCurrentDay = DateFormat.jm().format(
           DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
+      tempHigh = weatherData['main']['temp_max'].toDouble();
+      tempLow = weatherData['main']['temp_min'].toDouble();
+      tempFeels = weatherData['main']['feels_like'].toDouble();
+      humidity = weatherData['main']['humidity'].toDouble();
+      chance_of_rain = hourlyData[0].chance_of_rain;
     });
   }
 
@@ -109,10 +120,21 @@ class _LocationScreenState extends State<LocationScreen> {
             constraints: BoxConstraints.expand(),
             child: SafeArea(
               child: ListView(
+                scrollDirection: Axis.vertical,
                 // the scrollable list of widgets
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
-                  // TODO widgets/widget-returning-methods go here
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildBlurryBox("Humidity", "$humidity"),
+                      buildBlurryBox("Chance of Rain", "$chance_of_rain")
+                    ],
+                  ),
+                  // TODO FINISH WIDGET LIST
+                  buildHourlyTemperatureWidget(),
+                  //Josh Lohner - code 12/4/22 | Info:Initializes the buildDailyWidget, which provies a scrolling box of information
+                  (daily != null) ? buildDailyWidget(context) : SizedBox(),
                 ],
               ),
             ),
@@ -122,12 +144,37 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
+  BlurryContainer buildBlurryBox(title, value) {
+    return BlurryContainer(
+      blur: 5,
+      elevation: 0,
+      color: Colors.transparent,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text("$title", style: kSmallTextStyle),
+          Text("$value", style: kSmallerTextStyle)
+        ],
+      ),
+    );
+  }
+
+  SingleChildRenderObjectWidget buildHourlyTemperatureWidget() {
+    return (hourly != null)
+        ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
+            child: HourlyTemperatureWidget(hourly: hourly),
+          )
+        : SizedBox();
+  }
+
 //Josh Lohner - code 12/4/22 | Info:This widget maps the information gotten from calling the weather api, and displays the information for days in a scrolling view
   Widget buildDailyWidget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 130,
+        height: 130.0,
         color: Colors.transparent,
         padding: const EdgeInsets.all(8),
         child: ListView(
@@ -179,65 +226,75 @@ class _LocationScreenState extends State<LocationScreen> {
       constraints: BoxConstraints.expand(height: constraints.maxHeight),
       // Initial View (looks like base app)
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           // "AppBar" that's actually just a row at the top of the screen
           buildFakeAppBar(context),
           //Josh Lohner - code 12/4/22 | Info:This is the padding that contains the date information
-          Padding(
-            padding: EdgeInsets.all(18.0),
-            //Josh Lohner - code 12/4/22 | Info:This text object contains the date information formated from the Date object called previously
-            child: Text(
-              "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
-              textAlign: TextAlign.center,
-              style: kMessageTextStyle,
-            ),
-          ),
+          // Dylan Gaines - Extracted Method 12/4
+          buildDateWidget(),
           SizedBox(
-            height: 26,
+            height: 26.0,
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Text(
-                      '$temperature°',
-                      style: kTempTextStyle,
-                    ),
-                    Text(
-                      weatherIcon,
-                      style: kConditionTextStyle,
-                    ),
-                  ],
-                ),
-                Wind(windDirect, windSpeed),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 15.0),
-            child: Text(
-              '$weatherMessage in $cityName',
-              textAlign: TextAlign.right,
-              style: kMessageTextStyle,
-            ),
-          ),
-          SizedBox(
-            height: 26,
-          ),
-          (hourly != null)
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15.0),
-                  child: HourlyTemperatureWidget(hourly: hourly),
-                )
-              : SizedBox(),
-          //Josh Lohner - code 12/4/22 | Info:Initializes the buildDailyWidget, which provies a scrolling box of information
-          (daily != null) ? buildDailyWidget(context) : SizedBox(),
+          // Dylan Gaines - Extracted Method 12/4
+          buildMainTemperatureRow(),
+          buildWeatherMessage(),
         ],
+      ),
+    );
+  }
+
+  Padding buildWeatherMessage() {
+    return Padding(
+      padding: EdgeInsets.only(right: 15.0, top: 100.0),
+      child: Text(
+        '$weatherMessage in $cityName',
+        textAlign: TextAlign.right,
+        style: kMessageTextStyle,
+      ),
+    );
+  }
+
+  Padding buildMainTemperatureRow() {
+    return Padding(
+      padding: EdgeInsets.only(left: 15.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                weatherIcon,
+                style: kConditionTextStyle,
+                textAlign: TextAlign.left,
+              ),
+              Text('$temperature°', style: kTempTextStyle),
+              Wind(windDirect, windSpeed),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildBlurryBox("Feels Like", "$tempFeels°"),
+              buildBlurryBox("High:", "$tempHigh°"),
+              buildBlurryBox("Low:", "$tempLow°"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding buildDateWidget() {
+    return //Josh Lohner - code 12/4/22 | Info:This is the padding that contains the date information
+        Padding(
+      padding: EdgeInsets.all(18.0),
+      //Josh Lohner - code 12/4/22 | Info:This text object contains the date information formated from the Date object called previously
+      child: Text(
+        "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
+        textAlign: TextAlign.center,
+        style: kMessageTextStyle,
       ),
     );
   }
