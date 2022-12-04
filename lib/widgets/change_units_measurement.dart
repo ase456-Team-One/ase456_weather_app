@@ -40,7 +40,7 @@ class ChangeUnitsMeasurement extends StatelessWidget {
                       ],
                     ),
                     const Text(
-                      '\u2109',
+                      '°F',
                       style: TextStyle(fontWeight: FontWeight.w600),
                     )
                   ],
@@ -65,7 +65,7 @@ class ChangeUnitsMeasurement extends StatelessWidget {
                       ],
                     ),
                     const Text(
-                      '\u2103',
+                      '°C',
                       style: TextStyle(fontWeight: FontWeight.w600),
                     )
                   ],

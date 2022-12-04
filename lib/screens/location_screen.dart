@@ -111,11 +111,10 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
                   // TODO widgets/widget-returning-methods go here
-                  (daily != null) ? buildDailyWidget(context) : SizedBox(),
-                  (hourly != null) ? buildHourlyWidget(context) : SizedBox(),
                   (hourly != null)
                       ? HourlyTemperatureWidget(hourly: hourly)
                       : SizedBox(),
+                  (daily != null) ? buildDailyWidget(context) : SizedBox(),
                 ],
               ),
             ),
@@ -296,7 +295,6 @@ class _LocationScreenState extends State<LocationScreen> {
           sunsetTime: sunsetTime,
           currentDate: formattedCurrentDay,
         ),
-        buildPopUpMenu(context),
         Seasons(),
         ChangeUnitsMeasurement(
             changeUnitMeasurement: changeUnitMeasurement, unit: unit),
