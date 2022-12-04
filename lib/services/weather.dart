@@ -22,8 +22,8 @@ class WeatherModel {
   }
 
   Future<dynamic> getHourlyForecast(String cityName, String unit) async {
-    var str = '$openWeatherHourlyURLBase?q=$cityName&appid=$apiKey&units=$unit';
-    //print(str);
+    var str =
+        '$openWeatherHourlyURLBase?q=$cityName&appid=$apiKey&units=$unit&cnt=24';
     NetworkHelper networkHelper = NetworkHelper(str);
 
     var weatherData = await networkHelper.getData();
@@ -51,7 +51,7 @@ class WeatherModel {
     await location.getCurrentLocation();
 
     NetworkHelper networkHelper = NetworkHelper(
-        '$openWeatherHourlyURLBase?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=$unit');
+        '$openWeatherHourlyURLBase?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=$unit&cnt=24');
 
     var weatherData = await networkHelper.getData();
     List hourlyForecast = weatherData['list']
@@ -80,12 +80,14 @@ class WeatherModel {
     }
   }
 
-  String getMessage(int temp) {
-    if (temp > 25) {
+  String getMessage(int temp, String unit) {
+    if (temp > 25 && unit == 'metric' || temp > 77 && unit == 'imperial') {
       return 'It\'s 🍦 time';
-    } else if (temp > 20) {
+    } else if (temp > 20 && unit == 'metric' ||
+        temp > 68 && unit == 'imperial') {
       return 'Time for shorts and 👕';
-    } else if (temp < 10) {
+    } else if (temp > 10 && unit == 'metric' ||
+        temp > 50 && unit == 'imperial') {
       return 'You\'ll need 🧣 and 🧤';
     } else {
       return 'Bring a 🧥 just in case';

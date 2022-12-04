@@ -1,7 +1,8 @@
+import 'package:climate/widgets/change_units_measurement.dart';
 import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
-import 'package:blurrycontainer/blurrycontainer.dart';
+import '../widgets/hourly_temperature.dart';
 import 'city_screen.dart';
 
 enum Units { imperial, metric }
@@ -44,9 +45,16 @@ class _LocationScreenState extends State<LocationScreen> {
       temperature = temp.toInt();
       var condition = weatherData['weather'][0]['id'];
       weatherIcon = weather.getWeatherIcon(condition);
-      weatherMessage = weather.getMessage(temperature);
+      weatherMessage = weather.getMessage(temperature, unit);
       cityName = weatherData['name'];
       hourly = hourlyData;
+    });
+  }
+
+  void changeUnitMeasurement(String newUnit) {
+    setState(() {
+      unit = newUnit;
+      refetchAndUpdate();
     });
   }
 
@@ -64,58 +72,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
                   // TODO widgets/widget-returning-methods go here
-                  (hourly != null) ? buildHourlyWidget(context) : SizedBox(),
+                  (hourly != null)
+                      ? HourlyTemperatureWidget(hourly: hourly)
+                      : SizedBox(),
                 ],
               ),
             ),
           );
         }, // end of builder
-      ),
-    );
-  }
-
-  Widget buildHourlyWidget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: BlurryContainer(
-        blur: 5,
-        height: 130,
-        elevation: 0,
-        color: Colors.transparent,
-        padding: const EdgeInsets.all(8),
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.all(8.0),
-          children: hourly.map((hourlyTemperature) {
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '${hourlyTemperature.temperature}\u00B0',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Image.network(
-                    'http://openweathermap.org/img/wn/${hourlyTemperature.iconId}@4x.png',
-                    width: 36,
-                    height: 36,
-                  ),
-                  Text(
-                    '${hourlyTemperature.time}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
       ),
     );
   }
@@ -185,7 +149,8 @@ class _LocationScreenState extends State<LocationScreen> {
             size: 50.0,
           ),
         ),
-        buildPopUpMenu(context),
+        ChangeUnitsMeasurement(
+            changeUnitMeasurement: changeUnitMeasurement, unit: unit),
         TextButton(
           onPressed: () async {
             var typedName = await Navigator.push(
@@ -209,74 +174,6 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
       ],
     );
-  }
-
-  Widget buildPopUpMenu(BuildContext context) {
-    return PopupMenuButton<Units>(
-        // Callback that sets the selected popup menu item.
-        onSelected: (Units item) {
-          setState(() {
-            unit = item.name;
-            refetchAndUpdate();
-          });
-        },
-        icon: const Icon(
-          Icons.thermostat,
-          color: Colors.blue,
-          size: 48,
-        ),
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Units>>[
-              PopupMenuItem<Units>(
-                value: Units.imperial,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        unit == 'imperial'
-                            ? Icon(Icons.check, size: 15.0)
-                            : SizedBox(
-                                width: 15.0,
-                              ),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Fahrenheit'),
-                      ],
-                    ),
-                    const Text(
-                      '\u2109',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-              PopupMenuItem<Units>(
-                value: Units.metric,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        unit == 'metric'
-                            ? Icon(Icons.check, size: 15.0)
-                            : SizedBox(
-                                width: 15.0,
-                              ),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Celsius'),
-                      ],
-                    ),
-                    const Text(
-                      '\u2103',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-            ]);
   }
 
   Future<void> refetchAndUpdate() async {
