@@ -21,6 +21,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     var weatherData = await WeatherModel().getLocationWeather('imperial');
     var hourlyForecastData =
         await WeatherModel().getLocationHourlyForecast('imperial');
+    //Josh Lohner - code 12/4/22 | Info:Gets the location and api information for the initial loading screen
     var dailyForecastData =
         await WeatherModel().getLocationDailyForecast('imperial');
 

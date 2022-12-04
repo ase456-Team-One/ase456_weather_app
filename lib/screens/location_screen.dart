@@ -45,6 +45,7 @@ class _LocationScreenState extends State<LocationScreen> {
   String formattedCurrentDay;
   double windSpeed;
   double windDirect;
+  //Josh Lohner - code 12/4/22 | Info:Initliazes the List daily variable, and get the Date for the current day
   List daily;
   DateTime datetime = DateTime.now();
 
@@ -70,6 +71,7 @@ class _LocationScreenState extends State<LocationScreen> {
         formattedCurrentDay = "Day not Found";
         return;
       }
+      //Josh Lohner - code 12/4/22 | Info:When the UI is updated, it sets the dailyData object to the daily list
       daily = dailyData;
       double temp = weatherData['main']['temp'];
       windSpeed = weatherData['wind']['speed'];
@@ -120,6 +122,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
+//Josh Lohner - code 12/4/22 | Info:This widget maps the information gotten from calling the weather api, and displays the information for days in a scrolling view
   Widget buildDailyWidget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -181,8 +184,10 @@ class _LocationScreenState extends State<LocationScreen> {
         children: <Widget>[
           // "AppBar" that's actually just a row at the top of the screen
           buildFakeAppBar(context),
+          //Josh Lohner - code 12/4/22 | Info:This is the padding that contains the date information
           Padding(
             padding: EdgeInsets.all(18.0),
+            //Josh Lohner - code 12/4/22 | Info:This text object contains the date information formated from the Date object called previously
             child: Text(
               "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
               textAlign: TextAlign.center,
@@ -230,6 +235,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   child: HourlyTemperatureWidget(hourly: hourly),
                 )
               : SizedBox(),
+          //Josh Lohner - code 12/4/22 | Info:Initializes the buildDailyWidget, which provies a scrolling box of information
           (daily != null) ? buildDailyWidget(context) : SizedBox(),
         ],
       ),
@@ -279,6 +285,7 @@ class _LocationScreenState extends State<LocationScreen> {
             if (typedName != null) {
               var weatherData = await weather.getCityWeather(typedName, unit);
               var hourlyData = await weather.getHourlyForecast(typedName, unit);
+              //Josh Lohner - code 12/4/22 | Info: When the get weather button is pressed, it calls the api to provide the daily weather information
               var dailyForecast =
                   await weather.getDailyForecast(typedName, unit);
               updateUI(weatherData, hourlyData, dailyForecast);
@@ -296,6 +303,7 @@ class _LocationScreenState extends State<LocationScreen> {
   Future<void> refetchAndUpdate() async {
     var weatherData = await weather.getCityWeather(cityName, unit);
     var hourlyData = await weather.getHourlyForecast(cityName, unit);
+    //Josh Lohner - code 12/4/22 | Info: when the page is updated, it calls api for the daily forecast data to update the UI again
     var dailyData = await weather.getDailyForecast(cityName, unit);
     updateUI(weatherData, hourlyData, dailyData);
   }

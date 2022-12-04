@@ -9,6 +9,7 @@ String apiKey = dotenv.env['API_KEY'];
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 const openWeatherHourlyURLBase =
     'https://pro.openweathermap.org/data/2.5/forecast/hourly';
+//Josh Lohner - code 12/4/22 | Info: The base url for the api call to the opean weather daily api
 const openWeatherDailyURLBase =
     'https://api.openweathermap.org/data/2.5/forecast/daily';
 
@@ -63,6 +64,7 @@ class WeatherModel {
     return hourlyForecast;
   }
 
+  //Josh Lohner - code 12/4/22 | Info: Gets and returns the location and dailyforecast
   Future<dynamic> getLocationDailyForecast(String unit) async {
     Location location = Location();
 
@@ -78,6 +80,7 @@ class WeatherModel {
     return dailyForecast;
   }
 
+  //Josh Lohner - code 12/4/22 | Info: Gets and returns the daily forecast
   Future<dynamic> getDailyForecast(String cityName, String unit) async {
     var str = '$openWeatherDailyURLBase?q=$cityName&appid=$apiKey&units=$unit';
 
