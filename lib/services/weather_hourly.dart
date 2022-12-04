@@ -18,6 +18,6 @@ class HourlyTemperature {
         .format(DateTime.fromMillisecondsSinceEpoch(parsedJson['dt'] * 1000));
     this._temperature = parsedJson['main']['temp'].toInt().toString();
     this._iconId = parsedJson['weather'][0]['icon'];
-    this._chance_of_rain = (parsedJson['pop'] * 100).toString();
+    this._chance_of_rain = (parsedJson['pop'] * 100).floor().toString();
   }
 }

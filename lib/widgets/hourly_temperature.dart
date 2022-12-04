@@ -34,7 +34,7 @@ class HourlyTemperatureWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: BlurryContainer(
             blur: 5,
-            height: 130,
+            height: 150,
             elevation: 0,
             color: Colors.transparent,
             padding: const EdgeInsets.all(8),
@@ -66,6 +66,10 @@ class HourlyTemperatureWidget extends StatelessWidget {
                         '${hourlyTemperature.time}',
                         style: TextStyle(color: Colors.white),
                       ),
+                      Text(
+                        '🌧 ${hourlyTemperature.chance_of_rain}%',
+                        style: TextStyle(color: Colors.white),
+                      )
                     ],
                   ),
                 );
