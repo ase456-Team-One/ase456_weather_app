@@ -1,6 +1,8 @@
+import 'package:climate/widgets/change_units_measurement.dart';
 import 'package:flutter/material.dart';
 import 'package:climate/utilities/constants.dart';
 import 'package:climate/services/weather.dart';
+import '../widgets/hourly_temperature.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:intl/intl.dart';
 import '../widgets/windInfo.dart';
@@ -75,7 +77,7 @@ class _LocationScreenState extends State<LocationScreen> {
       temperature = temp.toInt();
       var condition = weatherData['weather'][0]['id'];
       weatherIcon = weather.getWeatherIcon(condition);
-      weatherMessage = weather.getMessage(temperature);
+      weatherMessage = weather.getMessage(temperature, unit);
       cityName = weatherData['name'];
       hourly = hourlyData;
       cloudinessPercent = weatherData['clouds']['all'];
@@ -85,6 +87,13 @@ class _LocationScreenState extends State<LocationScreen> {
       timeZone = weatherData["timezone"];
       formattedCurrentDay = DateFormat.jm().format(
           DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
+    });
+  }
+
+  void changeUnitMeasurement(String newUnit) {
+    setState(() {
+      unit = newUnit;
+      refetchAndUpdate();
     });
   }
 
@@ -104,6 +113,9 @@ class _LocationScreenState extends State<LocationScreen> {
                   // TODO widgets/widget-returning-methods go here
                   (daily != null) ? buildDailyWidget(context) : SizedBox(),
                   (hourly != null) ? buildHourlyWidget(context) : SizedBox(),
+                  (hourly != null)
+                      ? HourlyTemperatureWidget(hourly: hourly)
+                      : SizedBox(),
                 ],
               ),
             ),
@@ -286,6 +298,8 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
         buildPopUpMenu(context),
         Seasons(),
+        ChangeUnitsMeasurement(
+            changeUnitMeasurement: changeUnitMeasurement, unit: unit),
         TextButton(
           onPressed: () async {
             var typedName = await Navigator.push(
@@ -311,74 +325,6 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
       ],
     );
-  }
-
-  Widget buildPopUpMenu(BuildContext context) {
-    return PopupMenuButton<Units>(
-        // Callback that sets the selected popup menu item.
-        onSelected: (Units item) {
-          setState(() {
-            unit = item.name;
-            refetchAndUpdate();
-          });
-        },
-        icon: const Icon(
-          Icons.thermostat,
-          color: Colors.blue,
-          size: 48,
-        ),
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Units>>[
-              PopupMenuItem<Units>(
-                value: Units.imperial,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        unit == 'imperial'
-                            ? Icon(Icons.check, size: 15.0)
-                            : SizedBox(
-                                width: 15.0,
-                              ),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Fahrenheit'),
-                      ],
-                    ),
-                    const Text(
-                      '\u2109',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-              PopupMenuItem<Units>(
-                value: Units.metric,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        unit == 'metric'
-                            ? Icon(Icons.check, size: 15.0)
-                            : SizedBox(
-                                width: 15.0,
-                              ),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Celsius'),
-                      ],
-                    ),
-                    const Text(
-                      '\u2103',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-            ]);
   }
 
   Future<void> refetchAndUpdate() async {
