@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_decoration/icon_decoration.dart';
-import 'package:intl/intl_browser.dart';
 
 class Time extends StatefulWidget {
   final currentTime;
