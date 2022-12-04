@@ -47,6 +47,8 @@ class _LocationScreenState extends State<LocationScreen> {
   double windDirect;
   //Josh Lohner - code 12/4/22 | Info:Initliazes the List daily variable, and get the Date for the current day
   List daily;
+  String dropdownvalue = '0';
+  var items = ['Item 1', 'Item 2'];
   DateTime datetime = DateTime.now();
 
   @override
@@ -89,6 +91,12 @@ class _LocationScreenState extends State<LocationScreen> {
       timeZone = weatherData["timezone"];
       formattedCurrentDay = DateFormat.jm().format(
           DateTime.fromMillisecondsSinceEpoch((currentTime - timeZone) * 1000));
+      dropdownvalue =
+          "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}";
+      items[0] =
+          "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}";
+      items[1] =
+          "Today's date (M/D/Y): ${datetime.month}-${datetime.day}-${datetime.year}";
     });
   }
 
@@ -186,14 +194,28 @@ class _LocationScreenState extends State<LocationScreen> {
           buildFakeAppBar(context),
           //Josh Lohner - code 12/4/22 | Info:This is the padding that contains the date information
           Padding(
-            padding: EdgeInsets.all(18.0),
-            //Josh Lohner - code 12/4/22 | Info:This text object contains the date information formated from the Date object called previously
-            child: Text(
-              "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
-              textAlign: TextAlign.center,
-              style: kMessageTextStyle,
-            ),
-          ),
+              padding: EdgeInsets.all(18.0),
+              //Josh Lohner - code 12/4/22 | Info:This text object contains the date information formated from the Date object called previously
+              child: Center(
+                child: DropdownButton(
+                  value: dropdownvalue,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: items.map((String items) {
+                    return DropdownMenuItem(
+                      child: Text(
+                        items,
+                        textAlign: TextAlign.center,
+                      ),
+                      value: items,
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownvalue = newValue;
+                    });
+                  },
+                ),
+              )),
           SizedBox(
             height: 26,
           ),
