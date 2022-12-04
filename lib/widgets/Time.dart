@@ -10,7 +10,11 @@ class Time extends StatefulWidget {
   final String currentDate;
 
   const Time(
-      {Key key, this.currentTime, this.sunriseTime, this.sunsetTime, this.currentDate})
+      {Key key,
+      this.currentTime,
+      this.sunriseTime,
+      this.sunsetTime,
+      this.currentDate})
       : super(key: key);
 
   @override
@@ -22,7 +26,7 @@ class _TimeState extends State<Time> {
     if (widget.currentTime > widget.sunriseTime &&
         widget.currentTime < widget.sunsetTime) {
       return DecoratedIcon(
-        icon: Icon(Icons.sunny, size: 80, color: Colors.amber),
+        icon: Icon(Icons.sunny, size: 26, color: Colors.amber),
         decoration: IconDecoration(
           shadows: [
             Shadow(
@@ -34,7 +38,7 @@ class _TimeState extends State<Time> {
       );
     } else {
       return DecoratedIcon(
-        icon: Icon(Icons.nightlight_round_sharp, size: 80, color: Colors.white),
+        icon: Icon(Icons.nightlight_round_sharp, size: 26, color: Colors.white),
         decoration: IconDecoration(
           shadows: [
             Shadow(blurRadius: 6, color: Colors.white),

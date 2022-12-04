@@ -4,17 +4,17 @@ import '../utilities/constants.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 
 class Cloudiness extends StatefulWidget {
-   final percentage;
-   const Cloudiness({Key key, this.percentage}) : super(key: key);
+  final percentage;
+  const Cloudiness({Key key, this.percentage}) : super(key: key);
 
   @override
   State<Cloudiness> createState() => _CloudinessState();
 }
 
 class _CloudinessState extends State<Cloudiness> {
-  chooseColor(){
-    if(widget.percentage == 100) return Colors.black45;
-    if(widget.percentage < 100) return Colors.grey;
+  chooseColor() {
+    if (widget.percentage == 100) return Colors.black45;
+    if (widget.percentage < 100) return Colors.grey;
   }
 
   @override
@@ -27,7 +27,7 @@ class _CloudinessState extends State<Cloudiness> {
           icon: Icon(
             Icons.cloud,
             color: chooseColor(),
-            size: 60,
+            size: 26,
           ),
           decoration: IconDecoration(
             shadows: [
@@ -46,13 +46,10 @@ class _CloudinessState extends State<Cloudiness> {
           "${widget.percentage}%",
           style: TextStyle(
             color: Colors.white,
-            fontFamily: 'Spartan MB',
-            fontSize: 40,
+            fontSize: 26,
           ),
         ),
       ],
     );
   }
 }
-
-

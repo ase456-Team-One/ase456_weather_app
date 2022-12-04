@@ -18,7 +18,7 @@ class ChangeUnitsMeasurement extends StatelessWidget {
         icon: const Icon(
           Icons.thermostat,
           color: Colors.blue,
-          size: 48,
+          size: 26,
         ),
         itemBuilder: (BuildContext context) => <PopupMenuEntry<Units>>[
               PopupMenuItem<Units>(

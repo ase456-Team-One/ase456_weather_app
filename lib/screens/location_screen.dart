@@ -111,10 +111,6 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   buildBaseAppScreen(constraints, context),
                   // TODO widgets/widget-returning-methods go here
-                  (hourly != null)
-                      ? HourlyTemperatureWidget(hourly: hourly)
-                      : SizedBox(),
-                  (daily != null) ? buildDailyWidget(context) : SizedBox(),
                 ],
               ),
             ),
@@ -164,52 +160,6 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  Widget buildHourlyWidget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: BlurryContainer(
-        blur: 5,
-        height: 130,
-        elevation: 0,
-        color: Colors.transparent,
-        padding: const EdgeInsets.all(8),
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.all(8.0),
-          children: hourly.map((hourlyTemperature) {
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '${hourlyTemperature.temperature}\u00B0',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Image.network(
-                    'http://openweathermap.org/img/wn/${hourlyTemperature.iconId}@4x.png',
-                    width: 36,
-                    height: 36,
-                  ),
-                  Text(
-                    '${hourlyTemperature.time}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
   BoxDecoration buildBoxDecoration() {
     return BoxDecoration(
       image: DecorationImage(
@@ -232,26 +182,34 @@ class _LocationScreenState extends State<LocationScreen> {
           // "AppBar" that's actually just a row at the top of the screen
           buildFakeAppBar(context),
           Padding(
-            padding: EdgeInsets.only(right: 15.0),
+            padding: EdgeInsets.all(18.0),
             child: Text(
               "Today's date (D/M/Y): ${datetime.day}-${datetime.month}-${datetime.year}",
               textAlign: TextAlign.center,
               style: kMessageTextStyle,
             ),
           ),
+          SizedBox(
+            height: 26,
+          ),
           Padding(
             padding: EdgeInsets.only(left: 15.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  '$temperature°',
-                  style: kTempTextStyle,
+                Row(
+                  children: [
+                    Text(
+                      '$temperature°',
+                      style: kTempTextStyle,
+                    ),
+                    Text(
+                      weatherIcon,
+                      style: kConditionTextStyle,
+                    ),
+                  ],
                 ),
                 Wind(windDirect, windSpeed),
-                Text(
-                  weatherIcon,
-                  style: kConditionTextStyle,
-                ),
               ],
             ),
           ),
@@ -263,6 +221,16 @@ class _LocationScreenState extends State<LocationScreen> {
               style: kMessageTextStyle,
             ),
           ),
+          SizedBox(
+            height: 26,
+          ),
+          (hourly != null)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  child: HourlyTemperatureWidget(hourly: hourly),
+                )
+              : SizedBox(),
+          (daily != null) ? buildDailyWidget(context) : SizedBox(),
         ],
       ),
     );
@@ -283,7 +251,7 @@ class _LocationScreenState extends State<LocationScreen> {
           },
           child: Icon(
             Icons.near_me,
-            size: 50.0,
+            size: 26.0,
           ),
         ),
         Cloudiness(
@@ -318,7 +286,7 @@ class _LocationScreenState extends State<LocationScreen> {
           },
           child: Icon(
             Icons.location_city,
-            size: 50.0,
+            size: 26.0,
           ),
         ),
       ],

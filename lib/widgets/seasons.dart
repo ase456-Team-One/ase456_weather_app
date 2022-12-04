@@ -28,19 +28,19 @@ class _SeasonsState extends State<Seasons> {
       return Icon(
         Icons.sunny,
         color: Colors.orange.shade600,
-        size: 40.0,
+        size: 26.0,
       );
     } else if (int.parse(date_array[0]) >= 9 && int.parse(date_array[0]) < 12) {
       return Icon(
         Icons.forest_rounded,
         color: Colors.green,
-        size: 40.0,
+        size: 26.0,
       );
     } else {
       return Icon(
         Icons.ac_unit_rounded,
         color: Colors.white,
-        size: 40.0,
+        size: 26.0,
       );
     }
   }
