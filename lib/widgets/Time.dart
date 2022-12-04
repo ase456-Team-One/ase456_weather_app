@@ -22,6 +22,7 @@ class Time extends StatefulWidget {
 }
 
 class _TimeState extends State<Time> {
+  //Shows either Sun or Moon Icon depending on Time of selected Location
   chooseTime() {
     if (widget.currentTime > widget.sunriseTime &&
         widget.currentTime < widget.sunsetTime) {
@@ -56,6 +57,7 @@ class _TimeState extends State<Time> {
         SizedBox(
           width: 10,
         ),
+        //Displays
         Text(
           "${widget.currentDate}",
         ),
