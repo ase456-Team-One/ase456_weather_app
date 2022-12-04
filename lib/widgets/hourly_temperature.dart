@@ -1,3 +1,8 @@
+/// Owner: Trung Cao
+/// Revision date: Dec 3, 2022
+/// Feature: Hourly Temperature Forecast
+/// Description: HourlyTempartureForecast uses ListView widgets to display the hourly temperature forecasts.
+
 import 'package:flutter/material.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 

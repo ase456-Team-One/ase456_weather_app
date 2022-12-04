@@ -1,3 +1,6 @@
+/// Owner: Trung Cao
+/// Revision date: Dec 3, 2022
+/// Description: Widget testing for HourlyTemperatureWidget
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:climate/main.dart';
 import 'package:climate/services/weather_hourly.dart';

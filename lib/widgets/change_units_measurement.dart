@@ -1,3 +1,9 @@
+/// Owner: Trung Cao
+/// Revision date: Dec 3, 2022
+/// Feature: Change Units Measurement
+/// Description: ChangeUnitsMeasurement widget accepts unit and changeUnitMeasurement handler from its parent widget.
+/// When a user clicks the icon, a menu will pop up showing two options, once user chooses one of the options, it will call the
+/// handler passed from its parent to change state of unit and update the UI.
 import 'package:flutter/material.dart';
 
 enum Units { imperial, metric }
