@@ -43,7 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Time(currentTime: 5, sunriseTime: 2, sunsetTime: 7,),
+            Cloudiness(percentage: 100,),
+            Cloudiness(percentage: 50,),
+            Cloudiness(percentage: 0,)
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -51,61 +53,55 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Time extends StatefulWidget {
-  final currentTime;
-  final sunsetTime;
-  final sunriseTime;
-  final String currentDate = DateTime.now().toString();
-
-  Time(
-      {
-        this.currentTime,
-        this.sunriseTime,
-        this.sunsetTime});
+class Cloudiness extends StatefulWidget {
+  final percentage;
+  const Cloudiness({this.percentage});
 
   @override
-  State<Time> createState() => _TimeState();
+  State<Cloudiness> createState() => _CloudinessState();
 }
 
-class _TimeState extends State<Time> {
-  //Shows either Sun or Moon Icon depending on Time of selected Location
-  chooseTime() {
-    if (widget.currentTime > widget.sunriseTime &&
-        widget.currentTime < widget.sunsetTime) {
-      return DecoratedIcon(
-        icon: Icon(Icons.sunny, size: 26, color: Colors.amber),
-        decoration: IconDecoration(
-          shadows: [
-            Shadow(
-              blurRadius: 8,
-              color: Colors.amber.shade700,
-            ),
-          ],
-        ),
-      );
-    } else {
-      return DecoratedIcon(
-        icon: Icon(Icons.nightlight_round_sharp, size: 26, color: Colors.white),
-        decoration: IconDecoration(
-          shadows: [
-            Shadow(blurRadius: 6, color: Colors.white),
-          ],
-        ),
-      );
-    }
+//
+class _CloudinessState extends State<Cloudiness> {
+  //Selects cloud color according to percentage passed in
+  chooseColor() {
+    if (widget.percentage == 100) return Colors.black45;
+    if (widget.percentage < 100) return Colors.grey;
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        chooseTime(),
+        DecoratedIcon(
+          icon: Icon(
+            Icons.cloud,
+            //Cloud color is chosen based on percentage
+            color: chooseColor(),
+            size: 26,
+          ),
+          decoration: IconDecoration(
+            shadows: [
+              Shadow(
+                blurRadius: 6,
+                color: Colors.black,
+                offset: Offset(5, 5),
+              ),
+            ],
+          ),
+        ),
         SizedBox(
           width: 10,
         ),
-        //Displays
+        //Displays Cloudiness Percentage to the right of the cloud
         Text(
-          "${DateFormat.jm().format(DateTime.now())}",
+          "${widget.percentage}%",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+          ),
         ),
       ],
     );

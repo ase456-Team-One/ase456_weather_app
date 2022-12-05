@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_decoration/icon_decoration.dart';
+import 'package:intl/intl.dart';
 
 class Time extends StatefulWidget {
   final currentTime;
@@ -58,7 +59,7 @@ class _TimeState extends State<Time> {
         ),
         //Displays
         Text(
-          "${widget.currentDate}",
+          "${DateFormat.jm().format(DateTime.now())}",
         ),
       ],
     );

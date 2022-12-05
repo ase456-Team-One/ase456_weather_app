@@ -139,7 +139,6 @@ class _LocationScreenState extends State<LocationScreen> {
                       buildBlurryBox("Chance of Rain", "$chance_of_rain%")
                     ],
                   ),
-                  // TODO FINISH WIDGET LIST
                   buildHourlyTemperatureWidget(),
                   //Josh Lohner - code 12/4/22 | Info:Initializes the buildDailyWidget, which provies a scrolling box of information
                   (daily != null) ? buildDailyWidget(context) : SizedBox(),
