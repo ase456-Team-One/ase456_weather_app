@@ -4,14 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 
-class Seasons extends StatefulWidget {
-  const Seasons({Key key}) : super(key: key);
-
-  @override
-  State<Seasons> createState() => _SeasonsState();
-}
-
-class _SeasonsState extends State<Seasons> {
+class Seasons extends StatelessWidget {
   //Parameter is the month determined by DateTime.now()
   Icon monthPicker(String month) {
     //Determine what range of months the value for month lies within and return an Icon specific to the season which those months represent
@@ -52,7 +45,7 @@ class _SeasonsState extends State<Seasons> {
     //Pass the month value (index 0 in date_array) to monthPicker()
     return monthPicker(date_array[0]);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -60,3 +53,4 @@ class _SeasonsState extends State<Seasons> {
     );
   }
 }
+
