@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class Wind extends StatefulWidget {
+  //Values are determines by ['wind']['deg'] (wind direction) and ['wind']['speed'] (wind speed) from the weather API
   final double windDirect;
   final double windSpeed;
 
@@ -17,6 +18,7 @@ class _WindState extends State<Wind> {
 
   _WindState(this.windDirect, this.windSpeed);
 
+  //Return a Column which formats the values the values for wind speed and wind direction
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
@@ -24,6 +26,7 @@ class _WindState extends State<Wind> {
         'Wind Speed',
         style: TextStyle(fontSize: 24),
       ),
+      //Wind direction arrow
       Row(
         children: [
           Transform.rotate(
