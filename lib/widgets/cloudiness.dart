@@ -11,12 +11,6 @@ class Cloudiness extends StatefulWidget {
 }
 
 class _CloudinessState extends State<Cloudiness> {
-  equalsHundred(var percentage){
-    if (percentage == 100) return Colors.black45;
-  }
-  lessThanHundred(var percentage){
-    if (percentage < 100) return Colors.grey;
-  }
   //Selects cloud color according to percentage passed in
   chooseColor() {
     if (widget.percentage == 100) return Colors.black45;
