@@ -10,12 +10,37 @@ class Cloudiness extends StatefulWidget {
   State<Cloudiness> createState() => _CloudinessState();
 }
 
-//
 class _CloudinessState extends State<Cloudiness> {
+  equalsHundred(var percentage){
+    if (percentage == 100) return Colors.black45;
+  }
+  lessThanHundred(var percentage){
+    if (percentage < 100) return Colors.grey;
+  }
   //Selects cloud color according to percentage passed in
   chooseColor() {
     if (widget.percentage == 100) return Colors.black45;
     if (widget.percentage < 100) return Colors.grey;
+  }
+
+  chooseIcon(){
+    return DecoratedIcon(
+      icon: Icon(
+        Icons.cloud,
+        //Cloud color is chosen based on percentage
+        color: chooseColor(),
+        size: 26,
+      ),
+      decoration: IconDecoration(
+        shadows: [
+          Shadow(
+            blurRadius: 6,
+            color: Colors.black,
+            offset: Offset(5, 5),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -24,23 +49,7 @@ class _CloudinessState extends State<Cloudiness> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        DecoratedIcon(
-          icon: Icon(
-            Icons.cloud,
-            //Cloud color is chosen based on percentage
-            color: chooseColor(),
-            size: 26,
-          ),
-          decoration: IconDecoration(
-            shadows: [
-              Shadow(
-                blurRadius: 6,
-                color: Colors.black,
-                offset: Offset(5, 5),
-              ),
-            ],
-          ),
-        ),
+        chooseIcon(),
         SizedBox(
           width: 10,
         ),

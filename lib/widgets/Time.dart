@@ -22,6 +22,8 @@ class Time extends StatefulWidget {
 }
 
 class _TimeState extends State<Time> {
+  String today = DateFormat.jm().format(DateTime.now());
+
   //Shows either Sun or Moon Icon depending on Time of selected Location
   chooseTime() {
     if (widget.currentTime > widget.sunriseTime &&
@@ -59,7 +61,7 @@ class _TimeState extends State<Time> {
         ),
         //Displays
         Text(
-          "${DateFormat.jm().format(DateTime.now())}",
+          "$today",
         ),
       ],
     );
