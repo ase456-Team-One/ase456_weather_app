@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class Wind extends StatefulWidget {
-  final double windDirect;
-  final double windSpeed;
+class Wind extends StatelessWidget {
+  final windDirect;
+  final windSpeed;
 
-  Wind(this.windDirect,this.windSpeed, {Key key}) : super(key: key) ;
-
-  @override
-  State<Wind> createState() => _WindState(windDirect, windSpeed);
-}
-
-class _WindState extends State<Wind> {
-  var windDirect;
-  var windSpeed;
-
-  _WindState(this.windDirect,this.windSpeed);
+  Wind(this.windDirect,this.windSpeed);
 
   Transform directionArrow() {
     return Transform.rotate(
