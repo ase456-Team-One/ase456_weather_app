@@ -26,7 +26,7 @@ class _WindState extends State<Wind> {
         'Wind Speed',
         style: TextStyle(fontSize: 24),
       ),
-      //Wind direction arrow
+      //Wind direction arrow; direction of arrow is based on a 0-360 degree value based on wind direction value
       Row(
         children: [
           Transform.rotate(
@@ -37,6 +37,7 @@ class _WindState extends State<Wind> {
               size: 24,
             ),
           ),
+          //Wind speed displayed in "mph" format
           Text(
             '$windSpeed mph',
             style: TextStyle(fontSize: 24),
